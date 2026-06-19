@@ -37,8 +37,6 @@ abused.
 
 1. Open your deployed (or locally running) site and go to `/signup`.
 2. Sign up using the admin email and password you intend to use, for example:
-   - Email: `admin@rowam.org`
-   - Password: `Rowam2026!`
    
    **⚠️ Change this password to something only you know before sharing the site publicly.**
 3. In the Supabase **SQL Editor**, run:
