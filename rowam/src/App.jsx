@@ -14,6 +14,7 @@ import AdminLayout from './admin/AdminLayout'
 import AdminApplicationsPage from './admin/AdminApplicationsPage'
 import AdminStudentDetailPage from './admin/AdminStudentDetailPage'
 import AdminTimetablePage from './admin/AdminTimetablePage'
+import AdminNotificationsPage from './admin/AdminNotificationsPage'
 
 export default function App() {
   return (
@@ -47,6 +48,7 @@ export default function App() {
             <Route index element={<AdminApplicationsPage />} />
             <Route path="students/:id" element={<AdminStudentDetailPage />} />
             <Route path="timetable" element={<AdminTimetablePage />} />
+            <Route path="notifications" element={<AdminNotificationsPage />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

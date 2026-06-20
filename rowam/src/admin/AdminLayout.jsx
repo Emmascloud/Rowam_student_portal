@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 const NAV = [
   { to: '/admin', label: 'Applications', end: true },
   { to: '/admin/timetable', label: 'Timetable' },
+  { to: '/admin/notifications', label: 'Notifications' },
 ]
 
 export default function AdminLayout() {

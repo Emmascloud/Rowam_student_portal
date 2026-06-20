@@ -22,15 +22,25 @@ create policy "Users can view own profile"
   on public.profiles for select
   using (auth.uid() = id);
 
+-- Helper function: checks if the current user is an admin.
+-- SECURITY DEFINER means this function runs with the privileges of its
+-- owner (bypassing RLS internally), which is what lets it safely check
+-- the profiles table without triggering profiles' own RLS policies again.
+-- This is what avoids the "infinite recursion detected in policy for
+-- relation profiles" error you'd get from a policy on `profiles` querying
+-- `profiles` directly.
+create function public.is_admin()
+returns boolean as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid() and role = 'admin'
+  );
+$$ language sql security definer set search_path = public stable;
+
 -- Admins can read every profile (needed so the admin panel can tell who's who)
 create policy "Admins can view all profiles"
   on public.profiles for select
-  using (
-    exists (
-      select 1 from public.profiles p
-      where p.id = auth.uid() and p.role = 'admin'
-    )
-  );
+  using (public.is_admin());
 
 -- Auto-create a profile row whenever a new auth user signs up.
 create function public.handle_new_user()
@@ -140,14 +150,14 @@ create policy "Students can update own pending application"
 create policy "Admins can view all applications"
   on public.students for select
   using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+    public.is_admin()
   );
 
 -- Admins can update any application (approve/decline/assign ref/mark payment)
 create policy "Admins can update all applications"
   on public.students for update
   using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+    public.is_admin()
   );
 
 -- Keep updated_at fresh
@@ -190,19 +200,19 @@ create policy "Students can view own capture"
 create policy "Admins can view all captures"
   on public.captures for select
   using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+    public.is_admin()
   );
 
 create policy "Admins can insert captures"
   on public.captures for insert
   with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+    public.is_admin()
   );
 
 create policy "Admins can update captures"
   on public.captures for update
   using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+    public.is_admin()
   );
 
 
@@ -230,10 +240,10 @@ create policy "Anyone can view timetable"
 create policy "Admins can manage timetable"
   on public.timetable for all
   using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+    public.is_admin()
   )
   with check (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+    public.is_admin()
   );
 
 -- Seed the known June 2026 timetable from the original schedule
@@ -257,21 +267,21 @@ create policy "Admins can upload captures"
   on storage.objects for insert
   with check (
     bucket_id = 'captures'
-    and exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+    and public.is_admin()
   );
 
 create policy "Admins can read captures"
   on storage.objects for select
   using (
     bucket_id = 'captures'
-    and exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+    and public.is_admin()
   );
 
 create policy "Admins can update captures"
   on storage.objects for update
   using (
     bucket_id = 'captures'
-    and exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+    and public.is_admin()
   );
 
 -- Students can view their own capture files (e.g. their own photo)
