@@ -3,66 +3,125 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
 
   body {
-    @apply bg-[#f7f6f2] text-navy-900 font-sans antialiased;
+    @apply bg-cream-50 text-charcoal-900 font-sans antialiased;
   }
 
-  h1, h2, h3, h4 {
-    @apply font-display;
-  }
+  h1, h2, h3, h4 { @apply font-display; }
 
   *:focus-visible {
-    outline: 2px solid #f5a623;
+    outline: 2px solid #6366f1;
     outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: #6366f1;
+    color: white;
   }
 }
 
 @layer components {
-  .label-eyebrow {
-    @apply text-xs font-semibold tracking-[0.18em] uppercase text-gold-600;
+  /* ---- Typography ---- */
+  .eyebrow {
+    @apply text-[11px] font-bold tracking-[0.2em] uppercase text-indigo-500;
   }
 
   .section-tag {
-    @apply bg-navy-800 text-white text-sm font-semibold tracking-wide uppercase px-4 py-2;
+    @apply bg-charcoal-900 text-white text-xs font-bold tracking-widest uppercase px-4 py-2 rounded;
   }
 
   .field-label {
-    @apply block text-xs font-semibold tracking-wide uppercase text-navy-700 mb-1.5;
+    @apply block text-[11px] font-bold tracking-[0.12em] uppercase text-charcoal-500 mb-1.5;
   }
 
+  /* ---- Inputs ---- */
   .field-input {
-    @apply w-full rounded-md border border-navy-200 bg-white px-3.5 py-2.5 text-[15px] text-navy-900 placeholder-navy-300 transition-colors focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none;
+    @apply w-full rounded-xl border border-charcoal-200 bg-white px-4 py-3 text-[15px]
+           text-charcoal-900 placeholder-charcoal-300 transition-all
+           focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none;
   }
 
   .field-select {
-    @apply field-input appearance-none bg-no-repeat;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23102449' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-    background-position: right 0.75rem center;
+    @apply field-input appearance-none bg-no-repeat pr-10;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-position: right 0.875rem center;
     background-size: 1rem;
-    padding-right: 2.5rem;
   }
 
+  /* ---- Buttons ---- */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-md bg-navy-800 px-5 py-3 text-sm font-semibold text-white shadow-card transition-colors hover:bg-navy-700 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-charcoal-900
+           px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all
+           hover:bg-charcoal-800 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .btn-indigo {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600
+           px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all
+           hover:bg-indigo-500 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
   .btn-gold {
-    @apply inline-flex items-center justify-center gap-2 rounded-md bg-gold-500 px-5 py-3 text-sm font-semibold text-navy-900 shadow-card transition-colors hover:bg-gold-400 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gold-500
+           px-5 py-3 text-sm font-semibold text-charcoal-900 shadow-sm transition-all
+           hover:bg-gold-400 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-md border border-navy-300 bg-white px-5 py-3 text-sm font-semibold text-navy-800 transition-colors hover:bg-navy-50 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-charcoal-200
+           bg-white px-5 py-3 text-sm font-semibold text-charcoal-700 transition-all
+           hover:border-charcoal-300 hover:bg-charcoal-50 active:scale-[0.98]
+           disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5
+           text-sm font-semibold text-charcoal-600 transition-all
+           hover:bg-charcoal-100 hover:text-charcoal-900 active:scale-[0.98]
+           disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  /* ---- Cards ---- */
   .card {
-    @apply bg-white rounded-lg border border-navy-100 shadow-card;
+    @apply bg-white rounded-2xl border border-charcoal-100 shadow-card;
   }
 
+  .card-elevated {
+    @apply bg-white rounded-2xl shadow-lifted;
+  }
+
+  .card-indigo {
+    @apply rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-800 text-white;
+  }
+
+  .card-dark {
+    @apply rounded-2xl bg-charcoal-900 text-white;
+  }
+
+  /* ---- Tabs ---- */
+  .tab-bar {
+    @apply flex gap-1 rounded-xl bg-charcoal-100 p-1;
+  }
+
+  .tab-item {
+    @apply flex-1 rounded-lg px-3 py-2 text-center text-sm font-semibold transition-all
+           text-charcoal-500 hover:text-charcoal-800;
+  }
+
+  .tab-item-active {
+    @apply tab-item bg-white text-charcoal-900 shadow-sm;
+  }
+
+  /* ---- Status pills ---- */
   .status-pill {
-    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase;
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold tracking-wide uppercase;
+  }
+
+  /* ---- Misc ---- */
+  .divider {
+    @apply border-t border-charcoal-100;
   }
 }

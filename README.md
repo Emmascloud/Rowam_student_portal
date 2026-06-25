@@ -10,12 +10,13 @@ Apostleship Missionaries). Built with React + Tailwind CSS on the frontend, and 
   matching the official ROWAM Student Enrollment Application Form (Sections A–F).
 - **Student accounts** — applicants sign up with email + password, submit one application, and
   can return anytime to:
+  - See their captured passport photo as a profile avatar (falls back to initials if not yet captured)
   - Check their status, payment status, and reference number
   - View the course codes they've been registered for
   - Edit their own contact details (telephone, mobile, email, address)
   - Read messages from ROWAM staff in their inbox (targeted or broadcast)
 - **Admin panel** (hidden from students, not linked anywhere on the public site) — staff can:
-  - Review every application in full detail
+  - Review every application in full detail, with the student's photo shown as an avatar
   - Approve / decline / reset application status
   - Assign a student reference number (e.g. `ROWAM/2026/0001`)
   - Mark registration payment as paid/unpaid

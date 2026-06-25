@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import StatusPill from '../components/StatusPill'
+import Avatar from '../components/Avatar'
 
 const TRACK_LABELS = {
   evangelists: 'Evangelists',
@@ -11,6 +12,7 @@ const TRACK_LABELS = {
 
 export default function AdminApplicationsPage() {
   const [students, setStudents] = useState([])
+  const [avatarUrls, setAvatarUrls] = useState({}) // student_id -> signed url
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
@@ -26,9 +28,39 @@ export default function AdminApplicationsPage() {
 
     if (error) {
       setError('Could not load applications.')
-    } else {
-      setStudents(data)
+      setLoading(false)
+      return
     }
+
+    setStudents(data)
+
+    // Fetch every captured passport photo path in one query, then request
+    // signed URLs for all of them in a single batched call rather than one
+    // request per student.
+    const { data: captureRows } = await supabase
+      .from('captures')
+      .select('student_id, photo_path')
+      .not('photo_path', 'is', null)
+
+    if (captureRows && captureRows.length > 0) {
+      const paths = captureRows.map((c) => c.photo_path)
+      const { data: signedBatch } = await supabase.storage
+        .from('captures')
+        .createSignedUrls(paths, 3600)
+
+      if (signedBatch) {
+        const urlByPath = {}
+        signedBatch.forEach((entry) => {
+          if (entry.signedUrl) urlByPath[entry.path] = entry.signedUrl
+        })
+        const map = {}
+        captureRows.forEach((c) => {
+          if (urlByPath[c.photo_path]) map[c.student_id] = urlByPath[c.photo_path]
+        })
+        setAvatarUrls(map)
+      }
+    }
+
     setLoading(false)
   }
 
@@ -99,6 +131,7 @@ export default function AdminApplicationsPage() {
           <table className="w-full min-w-[800px] text-left text-sm">
             <thead>
               <tr className="border-b border-navy-100 bg-navy-50/60 text-xs uppercase tracking-wide text-navy-500">
+                <th className="px-5 py-3 font-semibold"></th>
                 <th className="px-5 py-3 font-semibold">Name</th>
                 <th className="px-5 py-3 font-semibold">Track</th>
                 <th className="px-5 py-3 font-semibold">Ref. No.</th>
@@ -111,6 +144,9 @@ export default function AdminApplicationsPage() {
             <tbody>
               {filtered.map((s) => (
                 <tr key={s.id} className="border-b border-navy-50 last:border-0 hover:bg-navy-50/40">
+                  <td className="px-5 py-3.5">
+                    <Avatar url={avatarUrls[s.id]} firstName={s.first_name} surname={s.surname} size="sm" />
+                  </td>
                   <td className="px-5 py-3.5 font-medium text-navy-900">{s.first_name} {s.surname}</td>
                   <td className="px-5 py-3.5 text-navy-600">{TRACK_LABELS[s.track]}</td>
                   <td className="px-5 py-3.5 text-navy-600">{s.student_ref || '—'}</td>
@@ -128,7 +164,7 @@ export default function AdminApplicationsPage() {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-5 py-10 text-center text-navy-400">No applications match your filters.</td>
+                  <td colSpan={8} className="px-5 py-10 text-center text-navy-400">No applications match your filters.</td>
                 </tr>
               )}
             </tbody>

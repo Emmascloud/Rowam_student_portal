@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import { useAuth } from '../context/AuthContext'
 import StatusPill from '../components/StatusPill'
+import Avatar from '../components/Avatar'
 import CameraCapture from './CameraCapture'
 import { TextField, SelectField, TextAreaField } from '../components/FormFields'
 
@@ -278,11 +279,14 @@ export default function AdminStudentDetailPage() {
       <Link to="/admin" className="text-sm font-medium text-navy-500 hover:text-navy-800">← Back to applications</Link>
 
       <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="font-display text-2xl font-semibold text-navy-900">
-            {student.first_name} {student.surname}
-          </h1>
-          <p className="mt-1 text-sm text-navy-500">{TRACK_LABELS[student.track]} · Submitted {new Date(student.created_at).toLocaleDateString('en-GB')}</p>
+        <div className="flex items-center gap-4">
+          <Avatar url={photoUrl} firstName={student.first_name} surname={student.surname} size="lg" />
+          <div>
+            <h1 className="font-display text-2xl font-semibold text-navy-900">
+              {student.first_name} {student.surname}
+            </h1>
+            <p className="mt-1 text-sm text-navy-500">{TRACK_LABELS[student.track]} · Submitted {new Date(student.created_at).toLocaleDateString('en-GB')}</p>
+          </div>
         </div>
         <div className="flex gap-2">
           <StatusPill value={student.status} />

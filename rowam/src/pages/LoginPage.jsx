@@ -25,67 +25,52 @@ export default function LoginPage() {
       return
     }
 
-    // Check role to decide where to send them
     const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', data.user.id)
-      .single()
+      .from('profiles').select('role').eq('id', data.user.id).single()
 
-    if (profile?.role === 'admin') {
-      navigate('/admin', { replace: true })
-    } else {
-      navigate(redirectTo, { replace: true })
-    }
+    navigate(profile?.role === 'admin' ? '/admin' : redirectTo, { replace: true })
   }
 
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-5 py-16">
-      <p className="label-eyebrow">Welcome back</p>
-      <h1 className="mt-2 font-display text-3xl font-semibold text-navy-900">Sign in</h1>
-      <p className="mt-2 text-sm text-navy-600">
-        Sign in to continue your application or check its status.
-      </p>
-
-      <form onSubmit={handleSubmit} className="card mt-8 space-y-5 p-7">
-        <div>
-          <label className="field-label" htmlFor="email">Email address</label>
-          <input
-            id="email"
-            type="email"
-            required
-            className="field-input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-          />
-        </div>
-        <div>
-          <label className="field-label" htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            required
-            className="field-input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Your password"
-          />
+    <div className="flex min-h-[80vh] items-center justify-center px-5 py-16">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <div className="eyebrow">Welcome back</div>
+          <h1 className="mt-2 font-display text-3xl font-semibold text-charcoal-900">Sign in</h1>
+          <p className="mt-2 text-sm text-charcoal-500">Access your student portal or staff panel.</p>
         </div>
 
-        {error && <p className="text-sm text-rose-600">{error}</p>}
+        <div className="card p-7 space-y-5">
+          <div>
+            <label className="field-label">Email address</label>
+            <input id="email" type="email" required className="field-input" value={email}
+              onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
+          </div>
+          <div>
+            <label className="field-label">Password</label>
+            <input id="password" type="password" required className="field-input" value={password}
+              onChange={(e) => setPassword(e.target.value)} placeholder="Your password" />
+          </div>
 
-        <button type="submit" disabled={loading} className="btn-gold w-full !py-3">
-          {loading ? 'Signing in…' : 'Sign in'}
-        </button>
-      </form>
+          {error && (
+            <div className="rounded-xl bg-rose-50 border border-rose-200 px-4 py-3 text-sm text-rose-700">
+              {error}
+            </div>
+          )}
 
-      <p className="mt-5 text-center text-sm text-navy-600">
-        Don't have an account?{' '}
-        <Link to="/signup" state={{ redirectTo }} className="font-semibold text-navy-900 hover:underline">
-          Create one
-        </Link>
-      </p>
+          <button onClick={handleSubmit} disabled={loading}
+            className="btn-indigo w-full !py-3.5">
+            {loading ? 'Signing in…' : 'Sign in →'}
+          </button>
+        </div>
+
+        <p className="mt-5 text-center text-sm text-charcoal-500">
+          Don't have an account?{' '}
+          <Link to="/signup" state={{ redirectTo }} className="font-semibold text-charcoal-900 hover:underline">
+            Create one
+          </Link>
+        </p>
+      </div>
     </div>
   )
 }
