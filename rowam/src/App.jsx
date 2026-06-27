@@ -17,6 +17,7 @@ import AdminTimetablePage from './admin/AdminTimetablePage'
 import AdminNotificationsPage from './admin/AdminNotificationsPage'
 import AdminResourcesPage from './admin/AdminResourcesPage'
 import AdminCourseRequestsPage from './admin/AdminCourseRequestsPage'
+import AdminLiveSessionsPage from './admin/AdminLiveSessionsPage'
 
 export default function App() {
   return (
@@ -53,6 +54,8 @@ export default function App() {
             <Route path="notifications" element={<AdminNotificationsPage />} />
             <Route path="resources" element={<AdminResourcesPage />} />
             <Route path="course-requests" element={<AdminCourseRequestsPage />} />
+            <Route path="live" element={<AdminLiveSessionsPage />} />
+            <Route path="live" element={<AdminLiveSessionsPage />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

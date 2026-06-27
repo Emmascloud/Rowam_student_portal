@@ -4,7 +4,8 @@ import { supabase } from '../lib/supabaseClient'
 import { useAuth } from '../context/AuthContext'
 import StatusPill from '../components/StatusPill'
 import Avatar from '../components/Avatar'
-import { TextField, SelectField, TextAreaField } from '../components/FormFields'
+import { TextField, TextAreaField } from '../components/FormFields'
+import LiveTab from './LiveTab'
 
 const TRACK_LABELS = { evangelists: 'Evangelists Track', pastors: 'Pastors Track', apostles: 'Apostles Track' }
 const STATUS_COPY = {
@@ -27,7 +28,7 @@ const EDITABLE_FIELDS = [
   { key: 'pastor_phone', label: "Pastor's phone" },
 ]
 
-const TABS = ['Overview', 'Courses', 'Resources', 'Inbox']
+const TABS = ['Overview', 'Courses', 'Live', 'Resources', 'Inbox']
 
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth()
@@ -211,6 +212,9 @@ export default function DashboardPage() {
             availableCourses={availableCourses}
             onRequest={requestCourse}
           />
+        )}
+        {tab === 'Live' && (
+          <LiveTab student={student} />
         )}
         {tab === 'Resources' && <ResourcesTab resources={resources} approved={student.status === 'approved'} />}
         {tab === 'Inbox' && (

@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 const NAV = [
   { to: '/admin', label: 'Applications', end: true },
   { to: '/admin/course-requests', label: 'Course Requests' },
+  { to: '/admin/live', label: 'Live Sessions' },
   { to: '/admin/resources', label: 'Resources' },
   { to: '/admin/timetable', label: 'Timetable' },
   { to: '/admin/notifications', label: 'Notifications' },
